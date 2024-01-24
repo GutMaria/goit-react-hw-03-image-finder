@@ -10,6 +10,7 @@ class App extends Component {
   state = {
     search: '',
     gallery: [],
+    totalHits: 0,
     loading: false,
     error: null,
     page: 1,
@@ -20,8 +21,8 @@ class App extends Component {
   }
 
   loadMore = () => {
-    this.setState(({ page }) => ({ page: page + 1 }));
-    console.log(this.state.page)
+    this.setState(({ page, loading }) => ({ page: page + 1, loading: true }));
+
   }
 
   async componentDidUpdate(_, prevState) {
@@ -29,9 +30,9 @@ class App extends Component {
 
     if (search && (prevState.search !== search || prevState.page !== page)) {
       this.setState({ loading: true });
-      try {const { data } = await searchPhoto(search, page);
-            console.log(data);
-            this.setState(({gallery})=>({gallery: data.hits?.length ? [...gallery, ...data.hits] : gallery}))
+      try {
+        const { data } = await searchPhoto(search, page);
+            this.setState(({gallery, totalHits})=>({gallery: data.hits?.length ? [...gallery, ...data.hits] : gallery, totalHits: data.totalHits || totalHits, }))
       } catch (error) {
         this.setState({ error: error.message })
       }
@@ -42,7 +43,7 @@ class App extends Component {
 
 
   render() {
-    const { gallery, loading } = this.state;
+    const { gallery, loading, page, totalHits } = this.state;
     return (
     <div
       style={{
@@ -53,9 +54,9 @@ class App extends Component {
       }}
     >
         <Searchbar onSubmit={this.addSearch}></Searchbar>
-        {loading&&<Loader/>}
         <ImageGallery items={gallery} />
-        {Boolean(gallery.length) && <Button onClick={this.loadMore } />}
+        {loading&&<Loader/>}
+        {Boolean(gallery.length) && page < Math.ceil(totalHits / 12) && <Button onClick={this.loadMore } />}
     </div>
   );
   }
