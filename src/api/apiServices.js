@@ -7,10 +7,9 @@ const instance = axios.create({
     image_type: 'photo',
     orientation: 'horizontal',
     per_page: 12,
-    page: 1,
   },
 });
 
-export const searchPhoto = search => {
-  return instance.get('/', { params: { q: search } });
+export const searchPhoto = (search, page = 1) => {
+  return instance.get('/', { params: { q: search, page } });
 };
