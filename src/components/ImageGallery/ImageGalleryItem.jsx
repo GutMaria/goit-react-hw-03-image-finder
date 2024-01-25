@@ -24,7 +24,7 @@ class ImageGalleryItem extends Component{
       <li className={css.galleryItem} onClick={showModal}>
       <img src={url} alt={tags} />
     </li> 
-      {isModalOpen && <Modal largeImageURL={largeImageURL} tags={tags} closeModal={closeModal}/>}
+      {isModalOpen && <Modal largeImageURL={largeImageURL} tags={tags} close={closeModal}/>}
       </>)
   }
 }

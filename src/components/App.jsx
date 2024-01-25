@@ -17,6 +17,9 @@ class App extends Component {
   }
 
   addSearch = (search) => {
+    if (this.state.search === search) {
+      return alert(`Ви вже дивитесь запит ${search}`)
+    }
     this.setState({search, page: 1, gallery: []})
   }
 

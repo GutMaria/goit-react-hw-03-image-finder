@@ -5,28 +5,38 @@ import css from './modal.module.css';
 const modalRoot = document.getElementById('modal-root');
 
 class Modal extends Component {
-
   componentDidMount() {
-        document.addEventListener("keydown", this.closeModal);
-    }
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
 
-    componentWillUnmount() {
-        document.removeEventListener("keydown", this.closeModal);
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown = (e) => {
+    if (e.code === "Escape") {
+      this.props.close();
     }
-  
-  closeModal = ({ target, currentTarget, code }) => {
-        if(target === currentTarget || code === "Escape") {
-            this.props.closeModal()
-        }
+  }
+
+  closeModal = (e) => {
+    if (e.target === e.currentTarget) {
+      this.props.close();
     }
+  }
 
   render() {
-    const { largeImageURL, tags, closeModal } = this.props;
-    return createPortal((<div className={css.overlay} onClick={closeModal}>
-      <div className={css.modal}>
-    <img src={largeImageURL} alt={tags} />
-  </div>
-</div>),modalRoot)
+    const { largeImageURL, tags } = this.props;
+
+    return createPortal(
+      <div className={css.overlay} onClick={this.closeModal}>
+        <div className={css.modal}>
+          <img src={largeImageURL} alt={tags} />
+        </div>
+      </div>,
+      modalRoot
+    );
   }
 }
+
 export default Modal;
